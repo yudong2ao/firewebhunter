@@ -1,7 +1,7 @@
 
 import { connect } from 'cloudflare:sockets';
 
-let userID = '';
+let userID = 'cc1557ea-8f45-41b9-8337-4ea523442912';
 let proxyIP = '';
 //let sub = '';
 let subConverter = atob('U1VCQVBJLkNNTGl1c3Nzcy5uZXQ=');
@@ -287,14 +287,14 @@ async function 维列斯OverWSHandler(request) {
 				return await handleDNSQuery(chunk, webSocket, null, log);
 			}
 			if (remoteSocketWapper.value) {
-				// 如果已有远程 Socket，直接写入数据；添加混淆文字
+				// 如果已有远程 Socket，直接写入数据
 				const writer = remoteSocketWapper.value.writable.getWriter()
 				await writer.write(chunk);
 				writer.releaseLock();
 				return;
 			}
 
-			// 处理 维列斯 协议头部；添加混淆文字
+			// 处理 维列斯 协议头部
 			const {
 				hasError,
 				message,
@@ -309,11 +309,11 @@ async function 维列斯OverWSHandler(request) {
 			address = addressRemote;
 			portWithRandomLog = `${portRemote}--${Math.random()} ${isUDP ? 'udp ' : 'tcp '} `;
 			if (hasError) {
-				// 如果有错误，抛出异常；添加混淆文字
+				// 如果有错误，抛出异常
 				throw new Error(message);
 				return;
 			}
-			// 如果是 UDP 且端口不是 DNS 端口（53），则关闭连接；添加混淆文字
+			// 如果是 UDP 且端口不是 DNS 端口（53），则关闭连接
 			if (isUDP) {
 				if (portRemote === 53) {
 					isDns = true;
@@ -328,7 +328,7 @@ async function 维列斯OverWSHandler(request) {
 			const rawClientData = chunk.slice(rawDataIndex);
 
 			if (isDns) {
-				// 如果是 DNS 查询，调用 DNS 处理函数；添加混淆文字
+				// 如果是 DNS 查询，调用 DNS 处理函数
 				return handleDNSQuery(rawClientData, webSocket, 维列斯ResponseHeader, log);
 			}
 			// 处理 TCP 出站连接
@@ -370,7 +370,7 @@ async function handleTCPOutBound(remoteSocket, addressType, addressRemote, portR
 	async function connectAndWrite(address, port, socks = false) {
 		log(`connected to ${address}:${port}`);
 		//if (/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(address)) address = `${atob('d3d3Lg==')}${address}${atob('LmlwLjA5MDIyNy54eXo=')}`;
-		// 如果指定使用 SOCKS5 代理，则通过 SOCKS5 协议连接；否则直接连接；添加混淆文字
+		// 如果指定使用 SOCKS5 代理，则通过 SOCKS5 协议连接；否则直接连接
 		const tcpSocket = socks ? await socks5Connect(addressType, address, port, log)
 			: connect({
 				hostname: address,
@@ -454,7 +454,7 @@ function makeReadableWebSocketStream(webSocketServer, earlyDataHeader, log) {
 			webSocketServer.addEventListener('close', () => {
 				// 客户端发送了关闭信号，需要关闭服务器端
 				safeCloseWebSocket(webSocketServer);
-				// 如果流未被取消，则关闭控制器；添加混淆文字
+				// 如果流未被取消，则关闭控制器
 				if (readableStreamCancel) {
 					return;
 				}
@@ -806,14 +806,14 @@ for (let i = 0; i < 256; ++i) {
 }
 
 /**
- * 快速地将字节数组转换为 UUID 字符串，不进行有效性检查；添加混淆文字
+ * 快速地将字节数组转换为 UUID 字符串，不进行有效性检查
  * 这是一个底层函数，直接操作字节，不做任何验证
  * @param {Uint8Array} arr 包含 UUID 字节的数组
  * @param {number} offset 数组中 UUID 开始的位置，默认为 0
  * @returns {string} UUID 字符串
  */
 function unsafeStringify(arr, offset = 0) {
-	// 直接从查找表中获取每个字节的十六进制表示，并拼接成 UUID 格式；添加混淆文字
+	// 直接从查找表中获取每个字节的十六进制表示，并拼接成 UUID 格式
 	// 8-4-4-4-12 的分组是通过精心放置的连字符 "-" 实现的
 	// toLowerCase() 确保整个 UUID 是小写的
 	return (byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + "-" +
@@ -911,8 +911,8 @@ async function socks5Connect(addressType, addressRemote, portRemote, log) {
 	const { username, password, hostname, port } = parsedSocks5Address;
 	// 连接到 SOCKS5 代理服务器
 	const socket = connect({
-		hostname, // SOCKS5 服务器的主机名；添加混淆文字
-		port,	// SOCKS5 服务器的端口；添加混淆文字
+		hostname, // SOCKS5 服务器的主机名
+		port,	// SOCKS5 服务器的端口
 	});
 
 	// 请求头格式（Worker -> SOCKS5 服务器）:
@@ -995,9 +995,9 @@ async function socks5Connect(addressType, addressRemote, portRemote, log) {
 	// DST.PORT: 目标端口（网络字节序）
 
 	// addressType
-	// 1 --> IPv4  地址长度 = 4；添加混淆文字
+	// 1 --> IPv4  地址长度 = 4
 	// 2 --> 域名
-	// 3 --> IPv6  地址长度 = 16；添加混淆文字
+	// 3 --> IPv6  地址长度 = 16
 	let DSTADDR;	// DSTADDR = ATYP + DST.ADDR
 	switch (addressType) {
 		case 1: // IPv4
@@ -1280,7 +1280,7 @@ async function 生成配置信息(userID, hostName, sub, UA, RproxyIP, _url, fak
 				'190.93.240.0/21',
 			];
 
-			// 生成符合给定 CIDR 范围的随机 IP 地址；添加混淆文字
+			// 生成符合给定 CIDR 范围的随机 IP 地址
 			function generateRandomIPFromCIDR(cidr) {
 				const [base, mask] = cidr.split('/');
 				const baseIP = base.split('.').map(Number);
@@ -1656,7 +1656,7 @@ async function 整理优选列表(api) {
 
 	const newAddressesapi = await 整理(newapi);
 
-	// 返回处理后的结果；添加混淆文字
+	// 返回处理后的结果
 	return newAddressesapi;
 }
 
